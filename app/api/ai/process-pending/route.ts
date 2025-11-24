@@ -32,7 +32,7 @@ export async function POST() {
 
     try {
       const meta = await processImageFromUrl(publicUrl);
-      await supabase
+      const { error: updateError } = await supabase
         .from("image_metadata")
         .update({
           description: meta.description,
@@ -40,8 +40,9 @@ export async function POST() {
           colors: meta.colors,
           ai_processing_status: "completed",
           ai_error: null,
-        } as any)
+        })
         .eq("id", row.id);
+      if (updateError) throw updateError;
       processed += 1;
     } catch (err: any) {
       await supabase
