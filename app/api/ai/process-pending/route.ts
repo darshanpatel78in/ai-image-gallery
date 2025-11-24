@@ -34,29 +34,25 @@ export async function POST() {
     try {
       const meta = await processImageFromUrl(publicUrl);
       
-      const updateData: Database['public']['Tables']['image_metadata']['Update'] = {
-        description: meta.description,
-        tags: meta.tags,
-        colors: meta.colors,
-        ai_processing_status: "completed",
-        ai_error: null,
-      };
-      
       const { error: updateError } = await supabase
         .from("image_metadata")
-        .update(updateData)
+        .update({
+          description: meta.description,
+          tags: meta.tags,
+          colors: meta.colors,
+          ai_processing_status: "completed",
+          ai_error: null,
+        } as any)
         .eq("id", row.id);
       if (updateError) throw updateError;
       processed += 1;
     } catch (err: any) {
-      const errorUpdate: Database['public']['Tables']['image_metadata']['Update'] = {
-        ai_processing_status: "error",
-        ai_error: err?.message ?? String(err),
-      };
-      
       await supabase
         .from("image_metadata")
-        .update(errorUpdate)
+        .update({
+          ai_processing_status: "error",
+          ai_error: err?.message ?? String(err),
+        } as any)
         .eq("id", row.id);
     }
   }
