@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdminClient } from "@/lib/supabaseAdmin";
 import { processImageFromUrl } from "@/lib/ai/processImage";
-import type { Database } from "@/lib/types/supabase";
 
 const BATCH_SIZE = 10;
 
@@ -36,6 +35,7 @@ export async function POST() {
       
       const { error: updateError } = await supabase
         .from("image_metadata")
+        // @ts-ignore - Supabase type inference issue with generic Database type
         .update({
           description: meta.description,
           tags: meta.tags,
@@ -43,17 +43,18 @@ export async function POST() {
           ai_processing_status: "completed",
           ai_error: null,
         })
-        .eq("id", row.id);
+        .eq("id", (row as any).id);
       if (updateError) throw updateError;
       processed += 1;
     } catch (err: any) {
       await supabase
         .from("image_metadata")
+        // @ts-ignore - Supabase type inference issue with generic Database type
         .update({
           ai_processing_status: "error",
           ai_error: err?.message ?? String(err),
         })
-        .eq("id", row.id);
+        .eq("id", (row as any).id);
     }
   }
 
