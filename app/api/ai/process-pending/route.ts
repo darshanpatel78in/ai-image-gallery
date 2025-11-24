@@ -38,7 +38,7 @@ export async function POST() {
           description: meta.description,
           tags: meta.tags,
           colors: meta.colors,
-          ai_processing_status: "completed",
+          ai_processing_status: "completed" as const,
           ai_error: null,
         })
         .eq("id", row.id);
@@ -48,7 +48,7 @@ export async function POST() {
       await supabase
         .from("image_metadata")
         .update({
-          ai_processing_status: "error",
+          ai_processing_status: "error" as const,
           ai_error: err?.message ?? String(err),
         })
         .eq("id", row.id);
