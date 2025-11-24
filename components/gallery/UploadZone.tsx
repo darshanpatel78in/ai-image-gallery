@@ -6,15 +6,19 @@ import Button from "@/components/ui/Button";
 import Skeleton from "@/components/ui/Skeleton";
 import { useUpload } from "@/hooks/useUpload";
 
-export default function UploadZone() {
+interface UploadZoneProps {
+  onUploadComplete?: () => void;
+}
+
+export default function UploadZone({ onUploadComplete }: UploadZoneProps) {
   const { uploading, uploadFiles } = useUpload();
 
   const handleFiles = useCallback(
     (files: FileList | null) => {
       if (!files || files.length === 0) return;
-      void uploadFiles(files);
+      void uploadFiles(files, onUploadComplete);
     },
-    [uploadFiles]
+    [uploadFiles, onUploadComplete]
   );
 
   return (

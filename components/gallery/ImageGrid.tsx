@@ -11,6 +11,7 @@ interface ImageGridProps {
   page: number;
   onFindSimilar: (imageId: number) => void;
   onOpenImage: (image: any) => void;
+  onRefresh?: (refreshFn: () => void) => void;
 }
 
 export default function ImageGrid({
@@ -20,8 +21,14 @@ export default function ImageGrid({
   page,
   onFindSimilar,
   onOpenImage,
+  onRefresh,
 }: ImageGridProps) {
-  const { images, loading } = useImages({ q, color, similarTo, page });
+  const { images, loading, refresh } = useImages({ q, color, similarTo, page });
+
+  // Expose refresh function to parent
+  if (onRefresh) {
+    onRefresh(refresh);
+  }
 
   if (loading) {
     return (

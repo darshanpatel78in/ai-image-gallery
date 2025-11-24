@@ -9,7 +9,7 @@ export function useUpload() {
   const [uploading, setUploading] = useState(false);
   const supabase = createClientComponentClient<Database>();
 
-  const uploadFiles = useCallback(async (files: FileList) => {
+  const uploadFiles = useCallback(async (files: FileList, onSuccess?: () => void) => {
     if (!files || files.length === 0) return;
     setUploading(true);
     try {
@@ -66,6 +66,11 @@ export function useUpload() {
         await fetch("/api/ai/process-pending", { method: "POST" });
       } catch {
         // Ignore worker trigger errors; upload itself already succeeded.
+      }
+      
+      // Call success callback to refresh gallery
+      if (onSuccess) {
+        onSuccess();
       }
     } finally {
       setUploading(false);

@@ -14,6 +14,7 @@ export default function GalleryPage() {
   const [selectedImage, setSelectedImage] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState<number>(1);
+  const [refreshImages, setRefreshImages] = useState<(() => void) | null>(null);
 
   const handleSearchChange = (nextQ: string, nextColor: string) => {
     setQ(nextQ);
@@ -42,7 +43,7 @@ export default function GalleryPage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <UploadZone />
+      <UploadZone onUploadComplete={() => refreshImages?.()} />
       <SearchBar q={q} color={color} onChange={handleSearchChange} />
       <ImageGrid
         q={q}
@@ -51,6 +52,7 @@ export default function GalleryPage() {
         page={page}
         onFindSimilar={handleFindSimilar}
         onOpenImage={handleOpenImage}
+        onRefresh={setRefreshImages}
       />
       <Pagination page={page} onPageChange={handlePageChange} />
       <ImageModal

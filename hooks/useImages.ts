@@ -25,6 +25,7 @@ export function useImages(params: UseImagesParams) {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     async function load() {
@@ -49,7 +50,11 @@ export function useImages(params: UseImagesParams) {
     }
 
     load();
-  }, [params.q, params.color, params.similarTo, params.page]);
+  }, [params.q, params.color, params.similarTo, params.page, refreshKey]);
 
-  return { images, page, totalPages, loading };
+  const refresh = () => {
+    setRefreshKey((prev) => prev + 1);
+  };
+
+  return { images, page, totalPages, loading, refresh };
 }
