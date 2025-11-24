@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdminClient } from "@/lib/supabaseAdmin";
 import { processImageFromUrl } from "@/lib/ai/processImage";
+import type { Database } from "@/lib/types/supabase";
 
 const BATCH_SIZE = 10;
 
@@ -32,25 +33,30 @@ export async function POST() {
 
     try {
       const meta = await processImageFromUrl(publicUrl);
+      
+      const updateData: Database['public']['Tables']['image_metadata']['Update'] = {
+        description: meta.description,
+        tags: meta.tags,
+        colors: meta.colors,
+        ai_processing_status: "completed",
+        ai_error: null,
+      };
+      
       const { error: updateError } = await supabase
         .from("image_metadata")
-        .update({
-          description: meta.description,
-          tags: meta.tags,
-          colors: meta.colors,
-          ai_processing_status: "completed" as const,
-          ai_error: null,
-        })
+        .update(updateData)
         .eq("id", row.id);
       if (updateError) throw updateError;
       processed += 1;
     } catch (err: any) {
+      const errorUpdate: Database['public']['Tables']['image_metadata']['Update'] = {
+        ai_processing_status: "error",
+        ai_error: err?.message ?? String(err),
+      };
+      
       await supabase
         .from("image_metadata")
-        .update({
-          ai_processing_status: "error" as const,
-          ai_error: err?.message ?? String(err),
-        })
+        .update(errorUpdate)
         .eq("id", row.id);
     }
   }
