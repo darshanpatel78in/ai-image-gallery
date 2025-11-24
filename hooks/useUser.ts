@@ -10,6 +10,7 @@ export function useUser() {
 
   useEffect(() => {
     let ignore = false;
+    debugger
 
     async function load() {
       const {

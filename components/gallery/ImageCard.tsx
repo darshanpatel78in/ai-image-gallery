@@ -18,7 +18,19 @@ export default function ImageCard({
         className="block w-full cursor-pointer"
         onClick={onOpen}
       >
-        <div className="aspect-video bg-slate-800" />
+        <div className="aspect-video bg-slate-800 relative overflow-hidden">
+          {image.thumbnail_url ? (
+            <img
+              src={image.thumbnail_url}
+              alt={image.description || "Image"}
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center text-slate-500 text-sm">
+              No preview
+            </div>
+          )}
+        </div>
       </button>
       <div className="flex items-center justify-between gap-2 p-2 text-xs text-slate-300">
         <div className="flex-1 truncate">

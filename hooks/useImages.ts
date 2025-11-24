@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 export interface GalleryImage {
   id: number;
@@ -52,9 +52,9 @@ export function useImages(params: UseImagesParams) {
     load();
   }, [params.q, params.color, params.similarTo, params.page, refreshKey]);
 
-  const refresh = () => {
+  const refresh = useCallback(() => {
     setRefreshKey((prev) => prev + 1);
-  };
+  }, []);
 
   return { images, page, totalPages, loading, refresh };
 }

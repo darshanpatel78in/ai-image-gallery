@@ -1,20 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import UploadZone from "@/components/gallery/UploadZone";
 import ImageGrid from "@/components/gallery/ImageGrid";
 import SearchBar from "@/components/gallery/SearchBar";
 import Pagination from "@/components/gallery/Pagination";
 import ImageModal from "@/components/gallery/ImageModal";
+import { useUser } from "@/hooks/useUser";
 
 export default function GalleryPage() {
+  const { user, loading } = useUser();
+  const router = useRouter();
   const [q, setQ] = useState<string>("");
   const [color, setColor] = useState<string>("");
   const [similarTo, setSimilarTo] = useState<number | undefined>(undefined);
   const [selectedImage, setSelectedImage] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState<number>(1);
-  const [refreshImages, setRefreshImages] = useState<(() => void) | null>(null);
+  const [uploadKey, setUploadKey] = useState(0);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/sign-in");
+    }
+  }, [user, loading, router]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-slate-400">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return null;
+  }
 
   const handleSearchChange = (nextQ: string, nextColor: string) => {
     setQ(nextQ);
@@ -41,18 +63,25 @@ export default function GalleryPage() {
     setPage(nextPage);
   };
 
+  const handleUploadComplete = () => {
+    // Trigger re-render by updating a key
+    setUploadKey(prev => prev + 1);
+    // Reset to page 1 to see new uploads
+    setPage(1);
+  };
+
   return (
     <div className="flex flex-col gap-6">
-      <UploadZone onUploadComplete={() => refreshImages?.()} />
+      <UploadZone onUploadComplete={handleUploadComplete} />
       <SearchBar q={q} color={color} onChange={handleSearchChange} />
       <ImageGrid
+        key={uploadKey}
         q={q}
         color={color}
         similarTo={similarTo}
         page={page}
         onFindSimilar={handleFindSimilar}
         onOpenImage={handleOpenImage}
-        onRefresh={setRefreshImages}
       />
       <Pagination page={page} onPageChange={handlePageChange} />
       <ImageModal
