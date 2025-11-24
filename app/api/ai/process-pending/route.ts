@@ -40,7 +40,7 @@ export async function POST() {
           colors: meta.colors,
           ai_processing_status: "completed",
           ai_error: null,
-        })
+        } as any)
         .eq("id", row.id);
       processed += 1;
     } catch (err: any) {
