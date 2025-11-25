@@ -77,10 +77,62 @@ export default function GalleryPage() {
     setTotalCount(count);
   };
 
+  const handleDelete = async (imageId: number) => {
+    try {
+      const res = await fetch('/api/images/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ imageId }),
+      });
+
+      if (res.ok) {
+        setUploadKey(prev => prev + 1);
+      } else {
+        alert('Failed to delete image');
+      }
+    } catch (error) {
+      console.error('Delete error:', error);
+      alert('Failed to delete image');
+    }
+  };
+
+  const handleDeleteAll = async () => {
+    if (!confirm(`Delete all ${totalCount} images permanently? This cannot be undone.`)) {
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/images/delete-all', {
+        method: 'DELETE',
+      });
+
+      if (res.ok) {
+        setUploadKey(prev => prev + 1);
+        setPage(1);
+      } else {
+        alert('Failed to delete images');
+      }
+    } catch (error) {
+      console.error('Delete all error:', error);
+      alert('Failed to delete images');
+    }
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <UploadZone onUploadComplete={handleUploadComplete} />
-      <SearchBar q={q} color={color} onChange={handleSearchChange} />
+      <div className="flex items-center justify-between gap-4">
+        <SearchBar q={q} color={color} onChange={handleSearchChange} />
+        {totalCount > 0 && (
+          <button
+            type="button"
+            className="rounded border border-red-700 bg-red-950/50 px-3 py-2 text-sm text-red-400 hover:bg-red-950 whitespace-nowrap"
+            onClick={handleDeleteAll}
+          >
+            Delete All
+          </button>
+        )}
+      </div>
       <ImageGrid
         key={uploadKey}
         q={q}
@@ -90,6 +142,7 @@ export default function GalleryPage() {
         onFindSimilar={handleFindSimilar}
         onOpenImage={handleOpenImage}
         onDataLoaded={handleDataLoaded}
+        onDelete={handleDelete}
       />
       <Pagination page={page} totalPages={totalPages} totalCount={totalCount} onPageChange={handlePageChange} />
       <ImageModal
@@ -99,6 +152,7 @@ export default function GalleryPage() {
         onFindSimilar={handleFindSimilar}
         onFilterByTag={(tag) => handleSearchChange(tag, color)}
         onFilterByColor={(c) => handleSearchChange(q, c)}
+        onDelete={handleDelete}
       />
     </div>
   );

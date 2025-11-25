@@ -22,7 +22,7 @@ export default function SearchBar({ q, color, onChange }: SearchBarProps) {
       <input
         type="text"
         placeholder="Search by description or tags"
-        className="flex-1 rounded border border-slate-700 bg-slate-950 px-3 py-2 text-xs outline-none focus:border-primary"
+        className="flex-1 min-w-[200px] rounded border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 placeholder:text-slate-500 outline-none focus:border-primary"
         value={localQ}
         onChange={(e) => {
           const next = e.target.value;
@@ -33,7 +33,7 @@ export default function SearchBar({ q, color, onChange }: SearchBarProps) {
       <input
         type="text"
         placeholder="Color hex (e.g. #ff0000)"
-        className="w-32 rounded border border-slate-700 bg-slate-950 px-3 py-2 text-xs outline-none focus:border-primary"
+        className="w-full sm:w-48 rounded border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 placeholder:text-slate-500 outline-none focus:border-primary"
         value={localColor}
         onChange={(e) => {
           const next = e.target.value;

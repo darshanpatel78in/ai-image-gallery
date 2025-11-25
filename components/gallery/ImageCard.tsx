@@ -2,12 +2,14 @@ interface ImageCardProps {
   image: any;
   onFindSimilar: (imageId: number) => void;
   onOpen: () => void;
+  onDelete: (imageId: number) => void;
 }
 
 export default function ImageCard({
   image,
   onFindSimilar,
   onOpen,
+  onDelete,
 }: ImageCardProps) {
   const status = image.ai_processing_status as string | undefined;
 
@@ -46,7 +48,18 @@ export default function ImageCard({
           </span>
         )}
       </div>
-      <div className="flex items-center justify-end gap-2 px-2 pb-2 text-[11px]">
+      <div className="flex items-center justify-between gap-2 px-2 pb-2 text-[11px]">
+        <button
+          type="button"
+          className="rounded border border-slate-700 px-2 py-0.5 text-xs text-red-400 hover:bg-red-950 hover:border-red-700"
+          onClick={() => {
+            if (confirm('Delete this image?')) {
+              onDelete(image.image_id);
+            }
+          }}
+        >
+          Delete
+        </button>
         <button
           type="button"
           className="rounded border border-slate-700 px-2 py-0.5 text-xs text-slate-200 hover:bg-slate-800"

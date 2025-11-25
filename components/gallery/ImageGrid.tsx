@@ -12,6 +12,7 @@ interface ImageGridProps {
   onFindSimilar: (imageId: number) => void;
   onOpenImage: (image: any) => void;
   onDataLoaded?: (totalPages: number, totalCount: number) => void;
+  onDelete: (imageId: number) => void;
 }
 
 export default function ImageGrid({
@@ -22,6 +23,7 @@ export default function ImageGrid({
   onFindSimilar,
   onOpenImage,
   onDataLoaded,
+  onDelete,
 }: ImageGridProps) {
   const { images, loading, totalPages, totalCount } = useImages({ q, color, similarTo, page });
 
@@ -56,6 +58,7 @@ export default function ImageGrid({
           image={img}
           onFindSimilar={onFindSimilar}
           onOpen={() => onOpenImage(img)}
+          onDelete={onDelete}
         />
       ))}
     </div>

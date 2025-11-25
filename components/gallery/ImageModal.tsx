@@ -9,6 +9,7 @@ interface ImageModalProps {
   onFindSimilar: (imageId: number) => void;
   onFilterByTag: (tag: string) => void;
   onFilterByColor: (color: string) => void;
+  onDelete: (imageId: number) => void;
 }
 
 export default function ImageModal({
@@ -18,6 +19,7 @@ export default function ImageModal({
   onFindSimilar,
   onFilterByTag,
   onFilterByColor,
+  onDelete,
 }: ImageModalProps) {
   if (!open || !image) return null;
 
@@ -112,6 +114,19 @@ export default function ImageModal({
               </Button>
               <Button type="button" variant="ghost" onClick={handleRetry}>
                 Retry AI
+              </Button>
+              <Button
+                type="button"
+                variant="ghost"
+                className="text-red-400 hover:bg-red-950 border-red-700"
+                onClick={() => {
+                  if (confirm('Delete this image permanently?')) {
+                    onDelete(image.image_id);
+                    onClose();
+                  }
+                }}
+              >
+                Delete
               </Button>
             </div>
           </div>
