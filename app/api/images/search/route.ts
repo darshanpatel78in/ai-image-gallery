@@ -81,6 +81,7 @@ export async function GET(req: NextRequest) {
   }
 
   const totalPages = count ? Math.max(1, Math.ceil(count / PAGE_SIZE)) : 1;
+  const totalCount = count ?? 0;
 
   // Build public URLs for thumbnails/originals via storage API
   const images = await Promise.all(
@@ -119,5 +120,5 @@ export async function GET(req: NextRequest) {
     })
   );
 
-  return NextResponse.json({ images, page, totalPages });
+  return NextResponse.json({ images, page, totalPages, totalCount });
 }

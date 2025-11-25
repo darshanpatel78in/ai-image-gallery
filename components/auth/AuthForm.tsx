@@ -32,6 +32,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
         });
         if (error) throw error;
         showToast("Signed in successfully!");
+        router.refresh();
         router.push("/gallery");
       } else {
         const { data, error } = await supabase.auth.signUp({ email, password });
@@ -39,6 +40,7 @@ export default function AuthForm({ mode }: AuthFormProps) {
 
         if (data?.session) {
           showToast("Account created successfully!");
+          router.refresh();
           router.push("/gallery");
         } else {
           showToast("Account created. Please check your email, then sign in.");

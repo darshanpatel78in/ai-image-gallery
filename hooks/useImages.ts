@@ -24,6 +24,7 @@ export function useImages(params: UseImagesParams) {
   const [images, setImages] = useState<GalleryImage[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
@@ -46,6 +47,7 @@ export function useImages(params: UseImagesParams) {
       setImages(data.images ?? []);
       setPage(data.page ?? 1);
       setTotalPages(data.totalPages ?? 1);
+      setTotalCount(data.totalCount ?? 0);
       setLoading(false);
     }
 
@@ -56,5 +58,5 @@ export function useImages(params: UseImagesParams) {
     setRefreshKey((prev) => prev + 1);
   }, []);
 
-  return { images, page, totalPages, loading, refresh };
+  return { images, page, totalPages, totalCount, loading, refresh };
 }

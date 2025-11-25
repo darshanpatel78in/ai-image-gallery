@@ -62,22 +62,36 @@ export default function UploadZone({ onUploadComplete }: UploadZoneProps) {
 
   return (
     <section className="flex flex-col gap-3 rounded border border-dashed border-slate-700 bg-slate-900/40 p-4">
-      <div className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded border border-slate-700 bg-slate-900/60 p-6 text-center text-sm text-slate-300">
-        <p className="font-medium">Choose images to upload</p>
-        <p className="text-xs text-slate-400">
-          PNG or JPEG up to 10MB. Multiple files allowed.
-        </p>
+      <div className="flex flex-col items-center justify-center gap-3 rounded border border-slate-700 bg-slate-900/60 p-6 text-center text-sm text-slate-300">
+        <div className="flex flex-col items-center gap-2">
+          <p className="font-medium">Choose images to upload</p>
+          <p className="text-xs text-slate-400">
+            PNG or JPEG up to 10MB. Multiple files allowed.
+          </p>
+        </div>
         <input
           ref={fileInputRef}
           type="file"
           accept="image/png,image/jpeg"
           multiple
-          className="mt-3 text-xs"
+          className="hidden"
           onChange={(e: ChangeEvent<HTMLInputElement>) =>
             handleFileSelect(e.target.files)
           }
           disabled={uploading}
         />
+        <Button
+          type="button"
+          variant="ghost"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+          className="mt-1"
+        >
+          <svg className="mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+          </svg>
+          Choose Files
+        </Button>
       </div>
       
       {/* Preview or Upload Progress Section - maintains consistent height */}

@@ -2,20 +2,21 @@
 
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
-import { supabaseClient } from "@/lib/supabaseClient";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import type { Database } from "@/lib/types/supabase";
 
 export function useUser() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const supabase = createClientComponentClient<Database>();
 
   useEffect(() => {
     let ignore = false;
-    debugger
 
     async function load() {
       const {
         data: { session },
-      } = await supabaseClient.auth.getSession();
+      } = await supabase.auth.getSession();
       if (!ignore) {
         setUser(session?.user ?? null);
         setLoading(false);
@@ -26,7 +27,7 @@ export function useUser() {
 
     const {
       data: { subscription },
-    } = supabaseClient.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!ignore) setUser(session?.user ?? null);
     });
 
@@ -34,7 +35,7 @@ export function useUser() {
       ignore = true;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [supabase]);
 
   return { user, loading };
 }

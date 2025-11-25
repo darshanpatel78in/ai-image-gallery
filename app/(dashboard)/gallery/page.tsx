@@ -18,6 +18,8 @@ export default function GalleryPage() {
   const [selectedImage, setSelectedImage] = useState<any | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalCount, setTotalCount] = useState<number>(0);
   const [uploadKey, setUploadKey] = useState(0);
 
   useEffect(() => {
@@ -70,6 +72,11 @@ export default function GalleryPage() {
     setPage(1);
   };
 
+  const handleDataLoaded = (pages: number, count: number) => {
+    setTotalPages(pages);
+    setTotalCount(count);
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <UploadZone onUploadComplete={handleUploadComplete} />
@@ -82,8 +89,9 @@ export default function GalleryPage() {
         page={page}
         onFindSimilar={handleFindSimilar}
         onOpenImage={handleOpenImage}
+        onDataLoaded={handleDataLoaded}
       />
-      <Pagination page={page} onPageChange={handlePageChange} />
+      <Pagination page={page} totalPages={totalPages} totalCount={totalCount} onPageChange={handlePageChange} />
       <ImageModal
         image={selectedImage}
         open={isModalOpen}

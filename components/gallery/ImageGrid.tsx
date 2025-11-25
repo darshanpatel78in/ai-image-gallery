@@ -11,6 +11,7 @@ interface ImageGridProps {
   page: number;
   onFindSimilar: (imageId: number) => void;
   onOpenImage: (image: any) => void;
+  onDataLoaded?: (totalPages: number, totalCount: number) => void;
 }
 
 export default function ImageGrid({
@@ -20,8 +21,14 @@ export default function ImageGrid({
   page,
   onFindSimilar,
   onOpenImage,
+  onDataLoaded,
 }: ImageGridProps) {
-  const { images, loading } = useImages({ q, color, similarTo, page });
+  const { images, loading, totalPages, totalCount } = useImages({ q, color, similarTo, page });
+
+  // Notify parent of data changes
+  if (!loading && onDataLoaded) {
+    onDataLoaded(totalPages, totalCount);
+  }
 
   if (loading) {
     return (
